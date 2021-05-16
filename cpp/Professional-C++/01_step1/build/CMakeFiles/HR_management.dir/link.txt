@@ -1,1 +1,0 @@
-/usr/bin/c++     CMakeFiles/HR_management.dir/src/database/database.cpp.o CMakeFiles/HR_management.dir/src/employee/employee.cpp.o CMakeFiles/HR_management.dir/src/main.cpp.o  -o HR_management 

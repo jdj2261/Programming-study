@@ -1,7 +1,0 @@
-/home/djjin/Mygit/Programming-study/cpp/Professional-C++/01_step1/build/CMakeFiles/rebuild_cache.dir
-/home/djjin/Mygit/Programming-study/cpp/Professional-C++/01_step1/build/CMakeFiles/Employee.dir
-/home/djjin/Mygit/Programming-study/cpp/Professional-C++/01_step1/build/CMakeFiles/HR_management.dir
-/home/djjin/Mygit/Programming-study/cpp/Professional-C++/01_step1/build/CMakeFiles/DatabaseTest.dir
-/home/djjin/Mygit/Programming-study/cpp/Professional-C++/01_step1/build/CMakeFiles/Database.dir
-/home/djjin/Mygit/Programming-study/cpp/Professional-C++/01_step1/build/CMakeFiles/EmployeeTest.dir
-/home/djjin/Mygit/Programming-study/cpp/Professional-C++/01_step1/build/CMakeFiles/edit_cache.dir

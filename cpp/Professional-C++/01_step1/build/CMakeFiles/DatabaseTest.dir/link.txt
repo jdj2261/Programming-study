@@ -1,1 +1,0 @@
-/usr/bin/c++     CMakeFiles/DatabaseTest.dir/tests/DatabaseTest.cpp.o  -o DatabaseTest -Wl,-rpath,/home/djjin/Mygit/Programming-study/cpp/Professional-C++/01_step1/build libDatabase.so 
