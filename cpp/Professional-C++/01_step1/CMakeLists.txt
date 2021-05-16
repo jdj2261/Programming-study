@@ -22,10 +22,14 @@ file(GLOB SOURCE_FILES
 add_executable(${CMAKE_PROJECT_NAME} ${SOURCE_FILES})
 target_link_libraries(${CMAKE_PROJECT_NAME})
 
-add_library(Employee SHARED src/employee/employee.cpp)
+add_library(Employee SHARED
+    src/employee/employee.cpp
+    include/employee/employee.h)
 target_link_libraries(Employee)
 
-add_library(Database SHARED src/database/database.cpp)
+add_library(Database SHARED
+    include/database/database.h
+    src/database/database.cpp)
 target_link_libraries(Database)
 
 # for testEmployeeTest
