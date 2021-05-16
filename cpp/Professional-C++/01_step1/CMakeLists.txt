@@ -19,9 +19,8 @@ file(GLOB SOURCE_FILES
     src/database/*.cpp
     src/main.cpp
     )
-add_executable(${CMAKE_PROJECT_NAME} ${SOURCE_FILES})
-target_link_libraries(${CMAKE_PROJECT_NAME})
 
+# add Libraries
 add_library(Employee SHARED
     src/employee/employee.cpp
     include/employee/employee.h)
@@ -32,13 +31,20 @@ add_library(Database SHARED
     src/database/database.cpp)
 target_link_libraries(Database)
 
+# for project
+add_executable(${CMAKE_PROJECT_NAME} ${SOURCE_FILES})
+target_link_libraries(${CMAKE_PROJECT_NAME})
+
 # for testEmployeeTest
 add_executable(EmployeeTest tests/EmployeeTest.cpp)
-target_link_libraries( 
+target_link_libraries(EmployeeTest
     Employee
     )
+set_target_properties(EmployeeTest PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/tests")
 
 add_executable(DatabaseTest tests/DatabaseTest.cpp)
 target_link_libraries(DatabaseTest 
+    Employee
     Database
     )
+set_target_properties(DatabaseTest PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/tests")
