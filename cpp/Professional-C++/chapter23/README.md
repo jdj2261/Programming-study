@@ -15,7 +15,7 @@
 
      예를 들어 연산을 UI 스레드에 종속적이지 않은 독립 스레드로 분리해서 구현하면 처리 시간이 긴 연산을 백그라운드로 실행시키는 방식으로 UI의 응답 속도를 높일 수 있다.
 
-- 멀티스레드 관련 뭄ㄴ제를 방지하려면 여러 스레드가 공유 메모리를 동시에 읽거나 쓰지 않도록 디자인해야 한다.
+- 멀티스레드 관련 문제를 방지하려면 여러 스레드가 공유 메모리를 동시에 읽거나 쓰지 않도록 디자인해야 한다.
 
   아니면 동기화 기법이나 아토미 연산을 적용한다.
 
@@ -40,7 +40,7 @@
   <details>
     <summary>23.1.3. 데드락</summary> 
 
-  - 경쟁 상태를 막기 위해 상호 배제와 같은 동기화 기법(mutex)을 적용하다 보면 **교착상태(데드락)**에 부딪히기 쉽다.
+  - 경쟁 상태를 막기 위해 상호 배제와 같은 동기화 기법(mutex)을 적용하다 보면 **교착상태**(데드락)에 부딪히기 쉽다.
 
   - 여러 스레드가 서로 상대방 작업이 끝날 때까지 동시에 기다리는 상태를 말한다.
 
@@ -88,10 +88,156 @@
   - std::thread 클래스에서 사용하는 함수는 매개변수를 원하는 개수만큼 받을 수 있다.
 
   ~~~c++
-  ~~~
-
+  void counter(int id, int numIterations)
+  {
+  	for (int i = 0; i < numIterations; ++i) 
+      {
+  		cout << "Counter " << id << " has value " << i << endl;
+  	}
+  }
+  int main()
+  {
   
-
+  	thread t1(counter, 1, 6);
+  	thread t2(counter, 2, 4);
+  	t1.join();
+  	t2.join();
+  	return 0;
+  }
+  ~~~
+  
+  - thread 객체가 실행 가능한 상태에 있을 때 **조인 가능** 하다고 표현한다.
+  - 조인 가능한 thread 객체를 제거하려면 먼저 객체의 join( )이나 detach( )부터 호출해야 한다.
+  - join( )을 호출하면 그 스레드는 블록되며, 스레드가 작업을 끝날 때까지 기다린다.
+  - detach( )를 호출하면 thread 객체를 OS 내부의 스레드와 분리한다.
+  - 조인 가능 상태의 thread 객체를 제거하면 그 객체의 소멸자는 모든 스레드뿐만 아니라 애플리케이션마저 종료시킨다.
+  
+  ~~~
+  Counter 1 has value 0		
+  Counter 1 has value 1
+  Counter 1 has value 2
+  Counter 1 has value 3
+  ...
+  Counter 1 has value 2
+  Counter 1 has value 3
+  Counter 1 has value 4Counter 2 has value 0
+  Counter 2 has value 1
+  Counter 2 has value 2
+  ...
+  ~~~
+  
+  - 데이터 경쟁이 발생하지 않더라도 스레드마다 출력한 결과는 겹칠 수 있다.
+  
+    동기화 기법을 적용하여 뒤섞이지 않게 만들자.
+  
+  </details>
+  
+  <details>
+    <summary>23.2.2 함수 객체로 스레드 만들기</summary> 
+  
+  - 클래스에 operator( )를 구현한 후 멤버 변수를 추가하여 함수 객체로 만든다.
+  
+  ~~~c++
+  class Counter
+  {
+  public:
+  	Counter(int id, int numIterations)
+  		: mId(id), mNumIterations(numIterations)
+  	{
+  	}
+  
+  	void operator()() const
+  	{
+  		for (int i = 0; i < mNumIterations; ++i) {
+  			cout << "Counter " << mId << " has value " << i << endl;
+  		}
+  	}
+  
+  private:
+  	int mId;
+  	int mNumIterations;
+  };
+  ~~~
+  
+  - 함수 객체로 만든 스레드를 초기화 하는 방법은 세 가지가 있다.
+  
+  ~~~c++
+  int main()
+  {
+  	// Using uniform initialization syntax
+  	thread t1{ Counter{ 1, 20 } };
+  
+  	// Using named variable
+  	Counter c(2, 12);
+  	thread t2(c);
+  
+  	// Using temporary
+  	thread t3(Counter(3, 10));
+  
+  	// Wait for threads to finish
+  	t1.join();
+  	t2.join();
+  	t3.join();
+  
+  	return 0;
+  }
+  ~~~
+  
+  - 매개변수 없이 객체를 리턴한다면 유니폼 초기화를 사용하는 것이 좋다.
+  
+  ~~~
+  thread t1{ Couter{} };
+  ~~~
+  
+  </details>
+  
+  <details>
+    <summary>23.2.3 람다 표현식으로 스레드 만들기</summary> 
+  
+  ~~~c++
+  int main()
+  {
+  	int id = 1;
+  	int numIterations = 5;
+  	thread t1([id, numIterations] {
+  		for (int i = 0; i < numIterations; ++i) {
+  			cout << "Counter " << id << " has value " << i << endl;
+  		}
+  	});
+  	t1.join();
+  
+  	return 0;
+  }
+  ~~~
+  
+  </details>
+  
+  <details>
+    <summary>23.2.4 멤버 함수로 스레드 만들기</summary> 
+  
+  ~~~c++
+  class Request
+  {
+  public:
+  	Request(int id) : mId(id) { }
+  	void process()
+  	{
+  		cout << "Processing request " << mId << endl;
+  	}
+  private:
+  	int mId;
+  };
+  int main()
+  {
+  	Request req(100);
+  	thread t{ &Request::process, &req };
+  
+  	t.join();
+  
+  	return 0;
+  }
+  ~~~
+  
   </details>
 
 </details>
