@@ -294,18 +294,71 @@
   </details>
 
   <details>
-    <summary>사용자 정의 클래스 작성: 코드가 늘어날수록 제어할 것도 늘어난다</summary>
+    <summary>collections.namedtuple: 편리한 데이터 객체</summary>
 
-  - 변경이 불가능하며 생성된 후에는 수정할 수 없다.
-  - 리스트에서 튜플로 전환하여 프로그램에서 추가 성능을 쥐어짜려는 시도는 잘못된 접근일 수 있다.
-  - 튜플에 저장된 개별 속성에 이름을 지정할 수 없으므로 코드 가독성에 영향을 준다.
-  - 튜플에 저장된 필드 수를 가능한 한 적게 유지하는 것이 좋다.
+  - 데이터를 더 잘 구조화하여 코드를 정돈하고 가독성이 좋게 만들 수 있는 간단한 방법이다.
+
+  - 일반 튜플처럼 변경할 수 없다.
+
+    ~~~python
+    from collections import namedtuple
+    Car = namedtuple('Car', 'color mileage automatic')
+    >>> Car1 = Car('red', 3812.4, True)
+    >>> Car1
+    Car(color='red', mileage=3812.4, automatic=True)
+    ~~~
 
   </details>
 
-</details>
+  <details>
+    <summary>typing.NamedTuple: 개선된 네임드튜플</summary>
 
+  - namedtuple과 매우 흡사하며 차이점은 새로운 레코드 타입을 정의하고 타입 힌트를 지원하도록 갱신된 구문이다.
 
+    ~~~python
+    class Car(NamedTuple):
+      color: str
+      mileage: float
+      automatic: bool
+    ~~~
+
+  </details>
+
+  <details>
+    <summary>struct.Struct: 직렬화된 C 구조체</summary>
+
+  - bytes 객체로 직렬화된 C 구조체와 파이썬 값 사이의 변환을 수행한다.
+  - 파일에 저장되거나 네트워크로부터 들어오는 이진 데이터를 처리하는 데 사용할 수 있다.
+
+  </details>
+
+  <details>
+    <summary>types.SimpleNamespace: 세련된 속성 접근</summary>
+
+  - 딕셔너레이서 사용하는 obj['key'] 대괄호 인덱스 문법 대신 obj.key '점' 속성 접근을 사용할 수 있다.
+
+    ~~~python
+    from types import SimpleNamespace
+    car1 = SimpleNamespace(color='red', mileage=3812.4, automatic=True)
+    # 인스턴스는 속성 접근을 지원하고 변경할 수 있다.
+    car.mileage = 12
+    del car.automatic
+    ~~~
+
+  </details>
+
+  <details>
+    <summary>요점 정리</summary>
+
+  - **몇 개(2~3)의 필드만 갖고 있다.** -> 일반 튜플 객체를 사용하자 (예를들어 삼차원 공간에서 (x, y , z) 점을 생각해 보자.)
+  - **불변 필드가 필요하다.** -> 튜플, collections.namedtuple, typing.NamedTuple이 좋은 옵션이다.
+  - **오타가 발생하지 않도록 필드 이름을 고정할 필요가 있다.** -> collections.namedtuple, typing.NamedTuple을 이용하자.
+  - **간단하게 유지하기를 원한다** -> 딕셔너리 객체가 좋은 선택일 수 있다.
+  - **데이터 구조를 완전히 제어할 필요가 있다.** -> @property의 세터와 게터를 사용하여 사용자 정의 클래스를 작성하자.
+  - **객체에 메서드를 추가해야 한다.** -> collections.namedtuple, typing.NamedTuple을 확장하여 작성하자.
+  - **데이터를 디스크에 저장하거나 네트워크로 전송해야 한다.** -> struct.Struct를 사용하자.
+
+  </details>
 
 </details>
 
