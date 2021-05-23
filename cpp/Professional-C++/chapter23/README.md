@@ -239,6 +239,206 @@
   ~~~
   
   </details>
+  
+  <details>
+    <summary>23.2.8 익셉션 복제와 다시 던지기</summary> 
+  
+  ~~~c++
+  #include <thread>
+  #include <iostream>
+  #include <exception>
+  #include <stdexcept>
+  
+  using namespace std;
+  
+  void doSomeWork()
+  {
+  	for (int i = 0; i < 5; ++i) {
+  		cout << i << endl;
+  	}
+  	cout << "Thread throwing a runtime_error exception..." << endl;
+  	throw runtime_error("Exception from thread");
+  }
+  
+  void threadFunc(exception_ptr& err)
+  {
+  	try {
+  		doSomeWork();
+  	} catch (...) {
+  		cout << "Thread caught exception, returning exception..." << endl;
+  		err = current_exception();
+  	}
+  }
+  
+  void doWorkInThread()
+  {
+  	exception_ptr error;
+  	// Launch thread
+  	thread t{ threadFunc, ref(error) };
+  	// Wait for thread to finish
+  	t.join();
+  	// See if thread has thrown any exception
+  	if (error) {
+  		cout << "Main thread received exception, rethrowing it..." << endl;
+  		rethrow_exception(error);
+  	} else {
+  		cout << "Main thread did not receive any exception." << endl;
+  	}
+  }
+  
+  int main()
+  {
+  	try {
+  		doWorkInThread();
+  	} catch (const exception& e) {
+  		cout << "Main function caught: '" << e.what() << "'" << endl;
+  	}
+  	return 0;
+  }
+  ~~~
+  
+  ~~~
+  0
+  1
+  2
+  3
+  4
+  Thread throwing a runtime_error exception...
+  Thread caught exception, returning exception...
+  Main thread received exception, rethrowing it...
+  Main function caught: 'Exception from thread'
+  ~~~
+  
+  </details>
 
 </details>
 
+<details>
+  <summary>23.3. 아토믹 연산 라이브러리</summary> 
+
+- 아토믹 타입(atomic type)을 사용하면 동기화 기법을 적용하지 않고 읽기와 쓰기를 동시에 처리하는 아토믹 접근이 가능하다.
+
+- mutex 객체와 같은 동기화 기법을 따로 사용하지 않고 스레드에 안전하게 만들 수 있다.
+
+  ~~~c++
+  atomic<int> counter(0); // 전역변수
+  ++counter;				// 여러 스레드에서 실행한다.
+  ~~~
+
+- 특정 타입에 대해 아토믹 연산을 처리할 경우 뮤텍스와 같은 동기화 메커니즘을 내부적으로 사용하기도 한다.
+
+  <details>
+    <summary>23.3.1 아토믹 타입 사용예</summary> 
+
+  - std::this_thread::sleep_for()로 루프를 한 바퀴 돌 때마다 일정한 시간을 지연시킨다.
+
+    ~~~ c++
+    void func(int& counter)
+    {
+    	for (int i = 0; i < 100; ++i) {
+    		++counter;
+    		cout << counter << endl;
+    		this_thread::sleep_for(chrono::milliseconds(1ms));
+    	}
+    }
+    ~~~
+
+    
+
+    ~~~c++
+    int main()
+    {
+    	int counter = 0;
+    	vector<thread> threads;
+    	for (int i = 0; i < 10; ++i) {
+    		threads.push_back(thread{ func, ref(counter) });
+    	}
+    	for (auto& t : threads) {
+    		t.join();
+    	}
+    	cout << "Result = " << counter << endl;
+    	return 0;
+    }
+    ~~~
+
+  - 아토믹이나 스레드 동기화 메커니즘을 사용하지 않고 단순하게 구현하면 데이터 경쟁이 발생한다.
+
+    ~~~
+    Result = 982
+    Result = 977
+    Result = 984
+    ~~~
+
+  - 아래와 같이 수정하여 실행한다.
+
+    ~~~C++
+    void func(atomic<int>& counter)
+    {
+    	for (int i = 0; i < 100; ++i) {
+    		++counter;
+    		this_thread::sleep_for(chrono::milliseconds(1));
+    	}
+    }
+    int main()
+    {
+    	atomic<int> counter(0);
+    	vector<thread> threads;
+    	for (int i = 0; i < 10; ++i) {
+    		threads.push_back(thread{ func, ref(counter) });
+    	}
+    	for (auto& t : threads) {
+    		t.join();
+    	}
+    	cout << "Result = " << counter << endl;
+    	return 0;
+    }
+    ~~~
+
+    ~~~
+    Result = 1000
+    Result = 1000
+    Result = 1000
+    ~~~
+
+  - 동기화 메커니즘을 따로 추가하지 않고도 스레드에 안전하고 데이터 경쟁이 발생하지 않도록 만들 수 있다.
+
+    그런데 이렇게 수정하면 성능 문제가 발생하기 때문에 이 부분을 처리하는데 걸리는 시간을 최소화하도록 구성해야 한다.
+
+  </details>
+
+</details>
+
+<details>
+  <summary>23.4 상호 배제</summary> 
+
+- 멀티스레드 프로그램을 작성할 때는 반드시 연산의 순서를 신중하게 결정해야 한다.
+
+  복잡하게 구성된 데이터를 여러 스레드가 동시에 접근할 때는 동기화 메커니즘을 사용해야 한다.
+
+  mutex와 lock 클래스를 활용하여 여러 스레드를 동기화하여 구현하자.
+
+  <details>
+    <summary>23.4.1 mutex</summary> 
+
+  - mutex의 사용법은 다음과 같다.
+
+    - 다른 스레드와 공유하는 메모리를 사용하려면 먼저 mutex 객체에 락을 걸어야 한다.
+
+      다른 스레드가 먼저 락을 걸어놨다면 그 락이 해제되거나 타임아웃으로 지정된 시간이 경과해야 쓸 수 있다.
+
+    - 스레드가 락을 걸었다면 공유 메모리를 마음껏 쓸 수 있고, 공유 데이터를 사용하려는 스레드마다 뮤텍스에 대한 락을 걸고 해제하는 동작을 정확히 구현해야 한다.
+
+    - 두 개 이상의 스레드가 락을 기다리고 있다면 어느 스레드가 먼저 락을 걸어 작업을 진행할지 알 수 없다.
+
+  - c++ 표준은 *시간 제약이 없는 뮤텍스*와 *시간 제약이 있는 뮤텍스* 클래스를 제공한다.
+
+    1. 시간 제약이 없는 뮤텍스 클래스
+
+       std::mutex, std::recursive_mutex, std::shared_mutex (c++17)
+
+       - lock() : 호출하는 측의 스레드가 락을 완전히 걸 때까지 대기한다.
+       - try_lock() : 
+
+  </details>
+
+</details>

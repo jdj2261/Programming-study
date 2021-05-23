@@ -1,14 +1,20 @@
 #include <iostream>
 #include <thread>
+#include <mutex>
 
 using namespace std;
 
 void counter(int id, int numIterations)
 {
-	for (int i = 0; i < numIterations; ++i) {
+	mutex mtx;
+	for (int i = 0; i < numIterations; ++i) 
+	{
+		mtx.lock();
 		cout << "Counter " << id << " has value " << i << endl;
-	}
+		mtx.unlock();
+	}	
 }
+
 
 int main()
 {
@@ -19,5 +25,3 @@ int main()
 	t2.join();
 	return 0;
 }
-
-

@@ -10,7 +10,8 @@ void func(int& counter)
 {
 	for (int i = 0; i < 100; ++i) {
 		++counter;
-		this_thread::sleep_for(chrono::milliseconds(1));
+		cout << counter << endl;
+		this_thread::sleep_for(chrono::milliseconds(1ms));
 	}
 }
 
