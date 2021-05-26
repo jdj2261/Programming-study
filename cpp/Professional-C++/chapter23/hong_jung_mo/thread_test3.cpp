@@ -28,4 +28,5 @@ int main()
 
     cout << "After" << endl;
     cout << shared_memory << endl;
+    
 }
