@@ -1,4 +1,4 @@
-# Programming Study
+## Programming Study
 
 This is a repository for practicing C++ and Python programming.
 
