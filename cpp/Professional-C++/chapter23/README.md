@@ -437,8 +437,40 @@
        std::mutex, std::recursive_mutex, std::shared_mutex (c++17)
 
        - lock() : 호출하는 측의 스레드가 락을 완전히 걸 때까지 대기한다.
-       - try_lock() : 
+       - try_lock() : 호출하는 측의 스레드가 락을 걸도록 시도한다. 현재 다른 스레드가 락을 걸었다면 호출이 즉시 리턴된다. 락을 걸었다면 try_lock()은 true를 리턴하고, 그렇지 않으면 false를 리턴한다.
+       - unlock() : 호출하는 측의 스레드가 현재 걸어둔 락을 해제한다.
+
+       - std::mutex : 한 스레드만 가질 수 있으며 이 뮤텍스를 소유하려면 lock()을 호출하고 대기한다.
+
+         try_lock()을 호출하면 락 걸기에 실패해 곧바로 리턴된다. 뮤텍스를 이미 확보한 스레드가 같은 뮤텍스에 대해 lock()이나 try_lock()을 또 호출하면 데드락이 발생하므로 조심해야 한다.
+
+       - std::recursive_mutex: 이미 recursive_mutex를 확보한 스레드가 동일한 recursive_mutex에 대해 lock()이나 try_lock을 또 다시 호출할 수 있다.
+
+       - std::shared_mutex: 이미 락을 건 스레드는 같은 뮤텍스에 대해 한 번 더 락을 걸 수 없다.
+
+    2. 시간 제약이 있는 뮤텍스 클래스
+
+       std::timed_mutex, std::recursive_time_mutex, std::shared_timed_mutex
+
+  **앞에서 나온 뮤텍스 클래스에 대한 락/언락 메서드를 직접 호출하면 안된다. ** **RAII 원칙에 위배**
+
+  **데드락을 방지하려면 반드시 락 클래스를 사용하자. 락 객체가 스코프를 벗어나면 자동으로 뮤텍스를 언락해주기 때문에 메서드를 일일이 정확한 시점에 호출하지 않아도 된다.**
 
   </details>
 
+  <details>
+    <summary>23.4.2 lock</summary> 
+
+  - std::lock_guard, unique_lock, shared_lock, scoped_lock(c++17)
+    1.  lock_guard
+       - explicit lock_guard(muext_type& m);
+       - lock_gaurd(mutex_type& m, adopt_lock_t);
+    2. unique_lock
+       - 락 선언 후 한참 뒤 실행될 때 락을 걸도록 지연시키는 고급 기능 제공
+    3. shared_lock
+       - unique_lock와 비슷하나 내부 공유 뮤텍스에 대해 공유 소유권 관련 메서드를 호출한다는 점이 다름
+    4. scoped_lock
+       - c++ 17 이상이라면 이걸쓰자.
+
 </details>
+
