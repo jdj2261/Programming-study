@@ -362,3 +362,46 @@
 
 </details>
 
+<details>
+  <summary>5-4. 세트와 멀티세트</summary>
+
+- **set**는 중복 요소를 허용하지 않는 정렬되지 않는 컬렉션
+
+  <details>
+    <summary>set: 나만의 믿음직한 세트</summary>
+
+  ~~~python
+  vowels = {'a', 'e', 'i', 'o', 'u'}
+  >>> 'e' in vowels
+  True
+  
+  letters = set('alice')
+  >>> letters.intersection(vowels)
+  {'a', 'e', 'i'}
+  
+  vowels.add('x')
+  >>> vowels
+  {'i', 'a', 'u', 'o', 'x', 'e'}
+  ~~~
+
+  </details>
+
+  <details>
+    <summary>frozenset: 불변 세트</summary>
+
+  - set의 '불변' 버전으로 생성된 후에는 변경할 수 없다.(삽입이나 삭제는 허용되지 않는다.)
+
+  - 요소에 대한 쿼리 작업만 허용한다
+
+    ~~~python
+    vowels = frozenset({'a', 'e', 'i', 'o', 'u'})
+    vowels.add('p')
+    >>> AttributeError: 'frozenset' object has no attribute 'add'
+    d = {frozenset({1, 2, 3}): 'hello'}
+    print(d[frozenset({1,2,3})])
+    >>> 'hello'
+    ~~~
+
+  </details>
+
+<는details>
