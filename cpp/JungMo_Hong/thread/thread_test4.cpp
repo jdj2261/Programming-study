@@ -14,7 +14,7 @@ using namespace std;
 mutex mtx;
 
 void dotProductNaive(const vector<int>& v0, const vector<int>& v1,
-                     const unsigned i_start, const unsigned i_end, unsigned long long & sum)
+const unsigned i_start, const unsigned i_end, unsigned long long & sum)
 {
     for (unsigned i = i_start; i < i_end; ++i)
     {
@@ -23,7 +23,7 @@ void dotProductNaive(const vector<int>& v0, const vector<int>& v1,
 }
 
 void dotProductLock(const vector<int>& v0, const vector<int>& v1,
-                     const unsigned i_start, const unsigned i_end, unsigned long long & sum)
+const unsigned i_start, const unsigned i_end, unsigned long long & sum)
 {
     for (unsigned i = i_start; i < i_end; ++i)
     {
@@ -34,7 +34,8 @@ void dotProductLock(const vector<int>& v0, const vector<int>& v1,
 }
 
 void dotProductAtomic(const vector<int>& v0, const vector<int>& v1,
-                     const unsigned i_start, const unsigned i_end, atomic<unsigned long long> & sum)
+                        const unsigned i_start, const unsigned i_end, 
+                        atomic<unsigned long long> & sum)
 {
     for (unsigned i = i_start; i < i_end; ++i)
     {
@@ -44,7 +45,7 @@ void dotProductAtomic(const vector<int>& v0, const vector<int>& v1,
 }
 
 auto dotProductFuture(const vector<int>& v0, const vector<int>& v1,
-                     const unsigned i_start, const unsigned i_end)
+                    const unsigned i_start, const unsigned i_end)
 {
     int sum = 0;
     for (unsigned i = i_start; i < i_end; ++i)
