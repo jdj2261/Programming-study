@@ -7,8 +7,6 @@
 
 using namespace std;
 
-
-
 int main()
 {
     int shared_memory(0);

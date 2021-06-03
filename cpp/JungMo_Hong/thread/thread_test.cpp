@@ -1,16 +1,18 @@
 #include <chrono>
-#include <vector>
+#include <iostream>
 #include <mutex>
 #include <string>
 #include <thread>
-#include <iostream>
+#include <vector>
 
 using namespace std;
 
+void test()
+{
+}
+
 int main()
 {
-    // cout << std::thread::hardware_concurrency() << endl;
-    // cout << std::this_thread::get_id() << endl;
     const int num_pro = std::thread::hardware_concurrency();
 
     cout << std::this_thread::get_id() << endl;
@@ -18,14 +20,17 @@ int main()
     vector<std::thread> mythread;
     mythread.resize(num_pro);
 
-    for (auto& e : mythread)
+    for (auto &e : mythread)
     {
-        e = std::thread([](){
-            cout << std::this_thread::get_id() << endl;
-            while (true) {}});
+        e = std::thread([]()
+                        {
+                            cout << std::this_thread::get_id() << endl;
+                            while (true)
+                            {
+                            }
+                        });
     }
 
-    for (auto& e : mythread)
+    for (auto &e : mythread)
         e.join();
-
 }
