@@ -370,7 +370,7 @@
   <details>
     <summary>set: 나만의 믿음직한 세트</summary>
 
-  ~~~python
+  ~~~8spython
   vowels = {'a', 'e', 'i', 'o', 'u'}
   >>> 'e' in vowels
   True
@@ -403,5 +403,209 @@
     ~~~
 
   </details>
+  
+  <details>
+    <summary>collections.Counter: 멀티세트</summary>
+  
+  - 요소가 두 번 이상 나타날 수 있는 멀티세트 타입을 구현한다.
+  
+  - 요소가 세트의 일부인지 아닌지뿐 아니라 세트에 포함된 '횟수'를 추적할 때 유용하다.
+  
+    ~~~python
+    from collections import Counter
+    inventory = Counter()
+    loot = {'sword': 1, 'bread': 3}
+    inventory.update(loot)
+    print(inventory)
+    >>> Counter({'bread': 3, 'sword': 1})
+    
+    more_loot = {'sword': 1, 'apple': 3}
+    inventory.update(more_loot)
+    print(inventory)
+    >>> Counter({'bread': 3, 'apple': 3, 'sword': 2})
+    ~~~
+  
+  - len()을 호출하면 멀티세트 고유 요소 수를 반환하고, sum() 함수를 사용하면 총 요소 수가 반한된다.
+  
+    ~~~python
+    print(f"len() : {len(inventory)}")
+    print(f"sum() : {sum(inventory.values())}")
+    >>> len() : 3
+    >>> sum() : 8
+    ~~~
+  
+  </details>
+  
+  <details>
+    <summary>요점 정리</summary>
+  
+  - 변경 가능한 세트가 필요하면 내장 set 타입을 사용하자.
+  - frozenset 객체는 해시가 가능하며 딕셔너리 또는 세트의 키로 사용할 수 있다.
+  - collections.Counter는 멀티세트 또는 bag 데이터 구조를 구현한다.
 
-<는details>
+</details>
+
+<details>
+  <summary>5-5. 스택(LIFO)</summary>
+
+- 리스트나 배열과 달리 스택은 객체로의 임의 접근을 허용하지 않는다.
+
+- 삽입 및 삭제 작업에 O(1) 시간이 걸린다.
+
+- 언어 구문 분석 및 런타임 메모리 관리('호출 스택')에 쓰인다.
+
+  트리 또는 그래프 구조에서 깊이 우선 탐색(DFS)은 스택을 활용한 알고리즘이다.
+
+  <details>
+    <summary>list: 간단한 내장 스택</summary>
+
+  - 최적의 성능을 위해 리스트 기반 스택은 더 높은 인덱스 쪽으로 커지고 더 낮은 인덱스 쪽으로 줄어들어야 한다.
+  - 앞쪽부터 추가, 제거하는 작업은 훨씬 느리고 O(n) 시간이 필요하다.
+
+  </details>
+
+  <details>
+    <summary>collections.deque: 빠르고 강력한 스택</summary>
+
+  - deque 클래스는 O(1) 시간에 어느 쪽에서든 요소를 추가, 삭제할 수 있는 양단 큐다.
+
+    양쪽 끝에서 요소를 동일하게 추가, 제거해도 되기 때문에 큐와 스택으로 모두 사용할 수 있다.
+
+  - 스택 중간의 임의 원소에 접긓나려 할 때는 나쁜 O(n) 성능을 갖는다.
+
+  </details>
+
+  <details>
+    <summary>queue.LifoQueue: 병렬 컴퓨팅을 위한 잠금 체계</summary>
+
+  - LifoQueue 스택 구현은 동기 방식이며 동시에 여러 생산자와 소비자를 지원하는 잠금 체계를 제공한다.
+
+  - 용도에 따라 쓰는 걸 추천한다.
+
+    ~~~python
+    s = LifoQueue()
+    s.put('eat')
+    s.put('sleep')
+    s.put('code')
+    print(s)
+    >>> <queue.LifoQueue object at 0x104295d30>
+    
+    print(s.get())
+    >>> code
+    print(s.get())
+    >>> sleep
+    print(s.get())
+    >>> eat
+    s.get_nowait() # queue.Empty (에러 발생)
+    s.get() # 블록되어 영원히 기다린다.
+    ~~~
+
+  </details>
+
+  <details>
+    <summary>파이썬의 스택 구현 비교하기</summary>
+
+  - collections.deque로 스택을 구현하자.
+
+  </details>
+
+</details>
+
+<details>
+  <summary>5.6 큐(FIFO)</summary>
+
+- 병렬 프로그래밍과 스케줄링 문제를 해결하는 데 종종 도움이 된다.
+
+  너비 우선 탐색(BFS)은 큐를 활용한 알고리즘이다.
+
+- 스케쥴링 알고리즘은 종종 우선순위 큐를 내부적으로 사용한다.
+
+  우선순위 큐는 언제 삽입되었느냐와 상관 없이 '우선순위가 가장 높은' 항목을 먼저 제거한다.
+
+  <details>
+    <summary>list: 끔찍하게 느린 큐</summary>
+
+  - 리스트로 큐는 절대 사용하지 말자. 매우 느리다!
+
+  </details>
+
+  <details>
+    <summary>collections.deque: 빠르고 강력한 큐</summary>
+
+  - collections.deque가 가장 좋은 선택이다.
+
+  </details>
+
+  <details>
+    <summary>queue.Queue: 병렬 컴퓨팅을 위한 잠금 체계</summary>
+
+  - 동기 방식으로 구현되었으며 동시에 여러 생산자와 소비자에게 잠금 체계를 제공한다.
+  - 잠금체계가 필요하지 않다면 queue.Queue 대신 collections.deque를 범용 큐로 사용하자.
+
+  </details>
+
+  <details>
+    <summary>multiprocessing.Queue: 공유 작업 큐</summary>
+
+  - 큐 안의 항목들을 여러 작업자가 동시에 처리할 수 있게 해 주는 공유 작업 큐 구현이다.
+  - GIL 때문에 CPython에서는 프로세스 기반 병렬화가 널리 사용된다.
+  - 프로세스 간에 데이터를 공유하기 위한 특별한 큐 구현인 multiprocessing.Queue를 사용하면 GIL 제한을 해결하고 여러 프로세스 간에 작업을 쉽게 배포 할 수 있다.
+
+  </details>
+
+</details>
+
+<details>
+  <summary>5.7 우선순위 큐</summary>
+
+- 숫자 가중치가 있는 레코드 집합을 관리하는 컨테이너 데이터 구조이다.
+
+  레코드 집합에서 '가장 작은' 키 또는 '가장 큰' 키를 사용하여 레코드에 빠르게 접근할 수 있다.
+
+- 일반적으로 긴급성이 높은 작업에 우선순위를 부여하는 등 스케줄링 문제 처리에 사용된다.
+
+  <details>
+    <summary>list: 수동으로 정렬된 큐 유지하기</summary>
+
+  - 정렬된 list를 사용하면 가장 작은 항목 또는 가장 큰 항목을 신속하게 찾아서 삭제할 수 있지만,
+
+    단점은 새 항목을 삽입하는 데는 느린 O(n) 시간이 걸린다는 점이다.
+
+  - 리스트에 항목을 추가한 후 다시 정렬해 순서를 유지하려면 적어도 O(nlogn) 시간이 걸린다.
+
+  </details>
+
+  <details>
+    <summary>heapq: 리스트 기반 이진 힙</summary>
+
+  - 우선순위 큐를 구현하기에 가장 좋은 선택이다.
+
+  - 가장 작은 항목의 삽입과 추출을 O(logn) 시간에 해낸다.
+
+    ~~~python
+    q = []
+    
+    heapq.heappush(q, (2, 'code'))
+    heapq.heappush(q, (1, 'eat'))
+    heapq.heappush(q, (3, 'sleep'))
+    
+    while q:
+        next_item = heapq.heappop(q)
+        print(next_item)
+    >>> (1, 'eat')
+    		(2, 'code')
+    		(3, 'sleep')
+    ~~~
+
+  </details>
+
+  <details>
+    <summary>queue.PriorityQueue: 아름다운 우선순위 큐</summary>
+
+  - 내부적으로 heapq를 사용하고 동일한 시간과 공간 복잡성을 공유한다.
+
+    다른 점은 동기 방식이며 동시에 여러 생산자와 소비자를 지원하는 잠금 체계를 제공한다는 것이다
+
+  </details>
+
+</details>
