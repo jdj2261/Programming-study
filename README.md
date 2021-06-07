@@ -10,7 +10,7 @@ The goal is to study one chapter per day.
 
 - [코드없는 프로그래밍](https://www.youtube.com/channel/UCHcG02L6TSS-StkSbqVy6Fg)
 
-- [Professional C++](http://www.yes24.com/Product/Goods/77669043)
+- [Professional C++](https://www.wiley.com/en-us/Professional+C%2B%2B%2C+4th+Edition-p-9781119421306)
 
   <left><img src="http://image.yes24.com/goods/77669043/800x0"  style="zoom:50%" width="400"></left>
 
