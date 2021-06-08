@@ -50,7 +50,6 @@ public:
         for (auto &ele : m_patient)
         {
             cout << "Meet patient : " << ele->m_name << endl;
-            ;
         }
     }
     friend class Patient;
