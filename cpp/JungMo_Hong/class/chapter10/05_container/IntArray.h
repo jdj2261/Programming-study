@@ -28,7 +28,7 @@ public:
     friend std::ostream &operator<<(std::ostream &out, const IntArray &arr);
 
     int size() const { return m_length; }
-
+    void deepCopy(const IntArray &arr);
     void reset();
     void resize(const unsigned &length);
     void insertBefore(const unsigned &index, const int &data);

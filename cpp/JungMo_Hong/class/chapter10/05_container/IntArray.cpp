@@ -19,15 +19,7 @@ IntArray::IntArray(const std::initializer_list<int> &list)
 
 IntArray::IntArray(const IntArray &arr)
 {
-    m_length = arr.m_length;
-    if (arr.m_data != nullptr)
-    {
-        m_data = new int[m_length];
-        for (int i = 0; i < m_length; ++i)
-            m_data[i] = arr.m_data[i];
-    }
-    else
-        m_data = nullptr;
+    deepCopy(arr);
 }
 
 IntArray &IntArray::operator=(const IntArray &arr)
@@ -36,16 +28,7 @@ IntArray &IntArray::operator=(const IntArray &arr)
         return *this;
 
     delete[] m_data;
-
-    m_length = arr.m_length;
-    if (arr.m_data != nullptr)
-    {
-        m_data = new int[m_length];
-        for (int i = 0; i < m_length; ++i)
-            m_data[i] = arr.m_data[i];
-    }
-    else
-        m_data = nullptr;
+    deepCopy(arr);
 
     return *this;
 }
@@ -55,6 +38,19 @@ std::ostream &operator<<(std::ostream &out, const IntArray &arr)
     for (unsigned i = 0; i < arr.m_length; ++i)
         out << arr.m_data[i] << " ";
     return out;
+}
+
+void IntArray::deepCopy(const IntArray &arr)
+{
+    m_length = arr.m_length;
+    if (arr.m_data != nullptr)
+    {
+        m_data = new int[m_length];
+        for (int i = 0; i < m_length; ++i)
+            m_data[i] = arr.m_data[i];
+    }
+    else
+        m_data = nullptr;
 }
 
 void IntArray::reset()
@@ -115,10 +111,9 @@ void IntArray::push_back(const int &data)
 }
 
 void IntArray::pop()
-
 {
     assert(m_length > 0);
-    resize(--m_length);
+    resize(m_length - 1);
 }
 
 int main()
@@ -146,8 +141,8 @@ int main()
     cout << int_array << endl;
     cout << int_array.size() << endl;
 
-    // int_array.pop();
-    // cout << int_array << endl;
-    // // cout << "size : " << int_array.size();
+    int_array.pop();
+    cout << int_array << endl;
+    // cout << "size : " << int_array.size();
     return 0;
 }
