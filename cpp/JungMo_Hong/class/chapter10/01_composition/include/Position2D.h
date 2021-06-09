@@ -14,6 +14,17 @@ public:
     }
 
     //TODO: overload operator =
+    Position2D &operator=(Position2D &pos2d)
+    {
+        if (this == &pos2d)
+            return *this;
+
+        m_x = pos2d.m_x;
+        m_y = pos2d.m_y;
+
+        return *this;
+    }
+
     void set(const Position2D &pos_target)
     {
         set(pos_target.m_x, pos_target.m_y);

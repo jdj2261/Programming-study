@@ -15,5 +15,10 @@ int main()
         cout << mon1 << endl;
     }
 
+    Monster mon3("Test", Position2D(0, 0));
+
+    cout << mon1 << endl;
+    cout << mon3 << endl;
+
     return 0;
 }

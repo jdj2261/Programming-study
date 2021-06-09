@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.10)
 
 project(composition_test)
 add_definitions("-Wall -Wextra -std=c++17")
-include_directories(include)
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/include") 
 file(GLOB SOURCE_FILES
     include/Monster.h
     include/Poisition2D.h
