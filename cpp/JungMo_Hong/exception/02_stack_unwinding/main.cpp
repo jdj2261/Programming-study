@@ -41,7 +41,7 @@ void first()
     {
         second();
     }
-    catch (double)
+    catch (int)
     {
         std::cerr << "First caught double exception" << '\n';
     }
