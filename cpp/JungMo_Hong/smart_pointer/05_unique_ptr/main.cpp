@@ -28,11 +28,11 @@ auto doSomething2(std::unique_ptr<Resource> res)
 }
 
 // 선호하지는 않음.
-auto doSomething2(Resource *res)
-{
-    res->setAll(10);
-    res->print();
-}
+//auto doSomething2(Resource *res)
+//{
+//    res->setAll(10);
+//    res->print();
+//}
 
 int main()
 {
@@ -102,7 +102,7 @@ int main()
         Resource *res = new Resource;
         std::unique_ptr<Resource> res1(res);
 
-        // res2에 주면 안됨! 소유권은 하나!!
+        // res2에 주면 안됨! 소유권은 한개만!!
         // std::unique_ptr<Resource> res2(res);
 
         // unique_ptr 사용 시 Delete 사용 하면 안됨
